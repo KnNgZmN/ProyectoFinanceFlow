@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Info, BookOpen, HelpCircle, X } from 'lucide-react';
+import { BookOpen, HelpCircle, X } from 'lucide-react';
 import { useState } from 'react';
 
 interface HelpPanelProps {

@@ -1,21 +1,22 @@
 import { motion } from 'motion/react';
-import { Search, X, Clock, TrendingUp, Target, DollarSign, ArrowRight } from 'lucide-react';
+import { Search, X, Clock, TrendingUp, Target, DollarSign, ArrowRight, LucideIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Transaction } from './TransactionList';
 import { formatCurrency } from '../utils/currency';
+import { CATEGORY_NAMES } from '../constants/categories';
 
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
   transactions: Transaction[];
-  onNavigate: (tab: string, item?: any) => void;
+  onNavigate: (tab: string) => void;
 }
 
 interface SearchResult {
   type: 'transaction' | 'category' | 'action' | 'section';
   title: string;
   subtitle?: string;
-  icon: any;
+  icon: LucideIcon;
   action: () => void;
   metadata?: string;
 }
@@ -81,8 +82,7 @@ export function GlobalSearch({ isOpen, onClose, transactions, onNavigate }: Sear
     });
 
     // Search in categories
-    const categories = ['Alimentación', 'Transporte', 'Entretenimiento', 'Compras', 'Servicios', 'Salud', 'Salario', 'Freelance'];
-    categories.forEach(cat => {
+    CATEGORY_NAMES.forEach(cat => {
       if (cat.toLowerCase().includes(searchQuery)) {
         const catTransactions = transactions.filter(t => t.category === cat);
         const total = catTransactions.reduce((sum, t) => sum + t.amount, 0);
