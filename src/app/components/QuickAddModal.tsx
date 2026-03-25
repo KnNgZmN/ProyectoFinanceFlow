@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Zap } from 'lucide-react';
 import { useState } from 'react';
+import { CATEGORIES } from '../constants/categories';
 
 interface QuickAddModalProps {
   isOpen: boolean;
@@ -13,25 +14,6 @@ interface QuickAddModalProps {
   }) => void;
 }
 
-interface Category {
-  id: string;
-  name: string;
-  emoji: string;
-  type: 'expense' | 'income';
-}
-
-const categories: Category[] = [
-  { id: '1', name: 'Alimentación', emoji: '🍔', type: 'expense' },
-  { id: '2', name: 'Transporte', emoji: '🚗', type: 'expense' },
-  { id: '3', name: 'Entretenimiento', emoji: '🎮', type: 'expense' },
-  { id: '4', name: 'Compras', emoji: '🛍️', type: 'expense' },
-  { id: '5', name: 'Servicios', emoji: '💡', type: 'expense' },
-  { id: '6', name: 'Salud', emoji: '💊', type: 'expense' },
-  { id: '7', name: 'Salario', emoji: '💰', type: 'income' },
-  { id: '8', name: 'Freelance', emoji: '💻', type: 'income' },
-  { id: '9', name: 'Inversión', emoji: '📈', type: 'income' },
-];
-
 export function QuickAddModal({ isOpen, onClose, onAdd }: QuickAddModalProps) {
   const [step, setStep] = useState<1 | 2>(1);
   const [type, setType] = useState<'expense' | 'income'>('expense');
@@ -39,7 +21,7 @@ export function QuickAddModal({ isOpen, onClose, onAdd }: QuickAddModalProps) {
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
 
-  const filteredCategories = categories.filter(cat => cat.type === type);
+  const filteredCategories = CATEGORIES.filter(cat => cat.type === type);
 
   const handleCategorySelect = (cat: Category) => {
     setCategory(cat.name);
@@ -48,11 +30,12 @@ export function QuickAddModal({ isOpen, onClose, onAdd }: QuickAddModalProps) {
   };
 
   const handleSubmit = () => {
-    if (!amount || !category) return;
+    const parsedAmount = parseFloat(amount);
+    if (!amount || !category || isNaN(parsedAmount) || parsedAmount <= 0) return;
 
     onAdd({
       description: description || category,
-      amount: parseFloat(amount),
+      amount: parsedAmount,
       category,
       type
     });
@@ -181,7 +164,7 @@ export function QuickAddModal({ isOpen, onClose, onAdd }: QuickAddModalProps) {
                     {/* Selected Category */}
                     <div className="flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl">
                       <span className="text-3xl">
-                        {categories.find(c => c.name === category)?.emoji}
+                        {CATEGORIES.find(c => c.name === category)?.emoji}
                       </span>
                       <div className="flex-1">
                         <p className="text-sm text-gray-600 dark:text-gray-400">Categoría</p>

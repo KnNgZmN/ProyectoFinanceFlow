@@ -30,43 +30,44 @@ export function DateFilter({ transactions, onClose }: DateFilterProps) {
 
   const handleExport = () => {
     if (exportFormat === 'csv') {
-      // Generate CSV
       const headers = 'Fecha,Descripción,Categoría,Tipo,Monto\n';
-      const rows = filtered.map(t => 
+      const rows = filtered.map(t =>
         `${t.date},"${t.description}",${t.category},${t.type === 'income' ? 'Ingreso' : 'Gasto'},${t.amount}`
       ).join('\n');
-      
-      const csv = headers + rows;
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+      const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
+      link.href = url;
       link.download = `financeflow_${new Date().toISOString().split('T')[0]}.csv`;
       link.click();
+      URL.revokeObjectURL(url);
     } else {
-      // For PDF, show a message (would need a PDF library in production)
       alert('Función de exportación PDF estará disponible próximamente');
     }
   };
 
+  const toISO = (date: Date) => date.toISOString().split('T')[0];
+
   const quickFilters = [
     { label: 'Hoy', getValue: () => {
-      const today = new Date().toISOString().split('T')[0];
+      const today = toISO(new Date());
       return { start: today, end: today };
     }},
     { label: 'Esta semana', getValue: () => {
-      const today = new Date();
-      const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
-      return { start: weekStart.toISOString().split('T')[0], end: new Date().toISOString().split('T')[0] };
+      const now = new Date();
+      const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+      return { start: toISO(weekStart), end: toISO(new Date()) };
     }},
     { label: 'Este mes', getValue: () => {
-      const today = new Date();
-      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-      return { start: monthStart.toISOString().split('T')[0], end: new Date().toISOString().split('T')[0] };
+      const now = new Date();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      return { start: toISO(monthStart), end: toISO(new Date()) };
     }},
     { label: 'Últimos 30 días', getValue: () => {
-      const today = new Date();
-      const thirtyDaysAgo = new Date(today.setDate(today.getDate() - 30));
-      return { start: thirtyDaysAgo.toISOString().split('T')[0], end: new Date().toISOString().split('T')[0] };
+      const now = new Date();
+      const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
+      return { start: toISO(thirtyDaysAgo), end: toISO(new Date()) };
     }},
   ];
 

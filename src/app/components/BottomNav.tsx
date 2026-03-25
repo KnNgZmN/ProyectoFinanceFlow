@@ -1,6 +1,5 @@
 import { motion } from 'motion/react';
 import { Home, TrendingUp, Target, Plus } from 'lucide-react';
-import React from 'react'
 
 interface BottomNavProps {
   activeTab: string;
@@ -18,31 +17,9 @@ export function BottomNav({ activeTab, onTabChange, onQuickAdd }: BottomNavProps
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 z-40 safe-bottom">
       <div className="flex items-center justify-around px-2 py-2">
-        {tabs.map((tab, index) => {
+        {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
-
-          // Spacer después de Análisis (index 1) para el FAB
-          if (index === 3) {
-            return (
-              <React.Fragment key="fab-group">
-                <div className="w-16" />
-                <button
-                  key={tab.id}
-                  onClick={() => onTabChange(tab.id)}
-                  className="flex flex-col items-center gap-1 px-4 py-2 relative"
-                >
-                  <Icon className={`w-6 h-6 transition-colors ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`} />
-                  <span className={`text-xs font-medium transition-colors ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`}>
-                    {tab.label}
-                  </span>
-                  {isActive && (
-                    <motion.div layoutId="activeTab" className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-12 h-1 bg-blue-600 dark:bg-blue-400 rounded-full" />
-                  )}
-                </button>
-              </React.Fragment>
-            );
-          }
 
           return (
             <button
